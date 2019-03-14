@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    S
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+
+    <script
+      src="http://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <input id="searchtext" type="text" placeholder="Search.." />
+    <button id="Searchgifs" type="submit" onclick="getData()">Search</button>
+    <button class="animal">cat</button>
+    <div class="inner"></div>
+
+    <div id="gifs-here"></div>
+
+    <script>
+      var queryURL =
+        "http://api.giphy.com/v1/gifs/search?q=" +
+        "animal" +
+        "&api_key=lAVgTq068IT2XRiezhBISKYICStO51jb&limit=15";
+
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function(stuff) {
+        stuff.data[0].images.original.url;
+        for (var i = 0; i < stuff.length; i++) {
+          append(stuff.data[i].images.original.url);
+        }
+
+        var stillLink = stuff.data[0].images["480w_still"].url;
+        var animatedLink = stuff.data[0].images.original.url;
+
+        var gif = $("<img>");
+        gif.attr("src", animatedLink);
+        gif.attr("data-stillLink", stillLink);
+        gif.attr("data-animatedLink", animatedLink);
+        gif.attr("data-currentstate", "animated");
+        gif.attr("class", "gif");
+        $("#gifs-here").append(gif);
+      });
+
+      $(document).on("click", ".gif", function() {
+        console.log("THIS GUY GOT CLICKED!!!", $(this).data().currentstate);
+
+        if ($(this).data().currentstate === "animated") {
+          // alert('MAKE THE GIF STILL!!!')
+          console.log(
+            "WE ARE ABOUT TO MAKE STIL!!!!",
+            $(this).data().stilllink
+          );
+          $(this).attr("src", $(this).data().stilllink);
+          $(this).data("currentstate", "still");
+        } else {
+          // alert('MAKE THE GIFF ANIMATED!!!')
+          console.log("WE ARE ABOUTTO MAKE ANIMATED!!!");
+          $(this).attr("src", $(this).data().animatedlink);
+          $(this).data("currentstate", "animated");
+        }
+      });
+    </script>
+  </body>
+</html>
