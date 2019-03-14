@@ -16,37 +16,42 @@
   <body>
     <input id="searchtext" type="text" placeholder="Search.." />
     <button id="Searchgifs" type="submit" onclick="getData()">Search</button>
-    <button class="animal">cat</button>
+    <!-- <button class="animal">cat</button> -->
     <div class="inner"></div>
 
     <div id="gifs-here"></div>
 
     <script>
-      var queryURL =
-        "http://api.giphy.com/v1/gifs/search?q=" +
-        "animal" +
-        "&api_key=lAVgTq068IT2XRiezhBISKYICStO51jb&limit=15";
+      function getData() {
+        var animal = $("#searchtext")
+          .val()
+          .trim();
 
-      $.ajax({
-        url: queryURL,
-        method: "GET"
-      }).then(function(stuff) {
-        stuff.data[0].images.original.url;
-        for (var i = 0; i < stuff.length; i++) {
-          append(stuff.data[i].images.original.url);
-        }
+        var queryURL =
+          "http://api.giphy.com/v1/gifs/search?q=" +
+          animal +
+          "&api_key=lAVgTq068IT2XRiezhBISKYICStO51jb&limit=15";
 
-        var stillLink = stuff.data[0].images["480w_still"].url;
-        var animatedLink = stuff.data[0].images.original.url;
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).then(function(stuff) {
+          stuff.data[0].images.original.url;
+          for (var i = 0; i < stuff.length; i++) {
+            append(stuff.data[i].images.original.url);
+          }
+          var stillLink = stuff.data[0].images["480w_still"].url;
+          var animatedLink = stuff.data[0].images.original.url;
 
-        var gif = $("<img>");
-        gif.attr("src", animatedLink);
-        gif.attr("data-stillLink", stillLink);
-        gif.attr("data-animatedLink", animatedLink);
-        gif.attr("data-currentstate", "animated");
-        gif.attr("class", "gif");
-        $("#gifs-here").append(gif);
-      });
+          var gif = $("<img>");
+          gif.attr("src", animatedLink);
+          gif.attr("data-stillLink", stillLink);
+          gif.attr("data-animatedLink", animatedLink);
+          gif.attr("data-currentstate", "animated");
+          gif.attr("class", "gif");
+          $("#gifs-here").append(gif);
+        });
+      }
 
       $(document).on("click", ".gif", function() {
         console.log("THIS GUY GOT CLICKED!!!", $(this).data().currentstate);
